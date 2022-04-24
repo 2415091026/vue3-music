@@ -8,7 +8,8 @@ export default {
         nickname: '',
         userId: '',
         token: ''
-      }
+      },
+      songerInfo: []
     }
   },
   actions: {
@@ -21,6 +22,9 @@ export default {
       state.nickname = nickname
       state.userId = userId
       state.token = token
+    },
+    setSongInfo(state, newArr) {
+      state.songerInfo = newArr
     }
   }
 }

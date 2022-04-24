@@ -3,7 +3,10 @@
     class="login"
     v-if="isLogin"
   >
-    <div class="login-box">
+    <div
+      class="login-box"
+      v-if="!img"
+    >
       <div class="login-title">登录</div>
       <!-- 登录的表单验证 -->
       <div class="login-form">
@@ -46,15 +49,62 @@
         <span>还没账号,去<span class="link">注册</span></span>
       </div>
     </div>
-
+    <div class="test">
+      <div class="ercode">
+        <svg
+          class="icon"
+          aria-hidden="true"
+          v-if="!img"
+          @click="useErWeiMaLogin"
+        >
+          <use xlink:href="#icon-erweima"></use>
+        </svg>
+        <svg
+          class="icon"
+          aria-hidden="true"
+          v-if="img"
+          @click="usePasswordLogin"
+        >
+          <use xlink:href="#icon-diannao"></use>
+        </svg>
+      </div>
+      <div class="descs">{{words}}</div>
+    </div>
+    <div
+      class="erweima"
+      v-if="img"
+    ><img
+        :src="img"
+        alt=""
+        v-if="!isSao"
+      >
+      <img
+        src="../../assets/styles/erweima.png"
+        alt=""
+        v-if="isSao"
+      >
+      <h4>{{QrWords}}</h4>
+      <div
+        class="past"
+        v-if="isErWeiMaDescShow"
+      >
+        <p>二维码过期啦</p>
+        <el-button
+          type="danger"
+          @click="refresh"
+        >刷新</el-button>
+      </div>
+    </div>
   </div>
 </template>
 <script>
-import { ref, reactive, computed } from "vue";
-import { loginByPhone } from "../../api/login";
+import { ref, reactive, computed, nextTick, watch } from "vue";
+import { loginByPhone, getKey, creatQr, check } from "../../api/login";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Cookies from "js-cookie";
+import { FIRST_LAST_KEYS } from "element-plus/lib/components";
+import { userInfo } from "os";
 export default {
   setup(props) {
     const store = useStore();
@@ -119,18 +169,132 @@ export default {
         }
       });
     };
+    const descWords = ref("");
+    const statusCode = ref("");
+    const key = ref("");
+    const isLogins = ref(false);
+    const img = ref("");
+    const words = ref("扫码登录");
+    const useErWeiMaLogin = () => {
+      console.log("扫码登录");
+      getQrKey();
+      isSao.value = false;
+    };
+    // 获取key
+    const getQrKey = () => {
+      getKey({ timerstamp: new Date().getTime() }).then((res) => {
+        console.log("key", res);
+        key.value = res.data.unikey;
+        getQr(res.data.unikey);
+        words.value = "密码登录";
+      });
+    };
+    const usePasswordLogin = () => {
+      img.value = "";
+      words.value = "扫码登录";
+      isLogins.value = false;
+    };
+    // 获取二维码图片
+    const getQr = (key) => {
+      creatQr({
+        key: key,
+        timerstamp: new Date().getTime(),
+        qrimg: true,
+      }).then((res) => {
+        console.log("img", res);
+        img.value = res.data.qrimg;
+        checkCode();
+        isLogins.value = true;
+      });
+    };
+    // 检查二维码状态
+    const userInfos = ref();
+    const COOKIES = ref();
+    const checkCode = (timerstamp) => {
+      check({
+        key: key.value,
+        timerstamp: new Date().getTime(),
+      }).then((res) => {
+        console.log("状态", res);
+        statusCode.value = res.code;
+        descWords.value = res.message;
+        userInfos.value = res;
+        COOKIES.value = res.cookie;
+      });
+    };
+    // 控制二维码过期文字提示的显示
+    const isErWeiMaDescShow = ref(false);
+    // 判断二维码是否被扫描
+    const isSao = ref(false);
+    const QrWords = ref("扫描二维码登录");
+    // 刷新二维码
+    const refresh = () => {
+      getQrKey();
+      isErWeiMaDescShow.value = false;
+    };
+    watch(
+      () => isLogins.value,
+      (val) => {
+        console.log(isLogins.value);
+        let timer = null;
+        if (val == true) {
+          timer = setInterval(async () => {
+            const timerstamp = new Date().getTime();
+            checkCode(timerstamp);
+            let code = statusCode.value;
+            if (code == 800) {
+              console.log(descWords.value, isErWeiMaDescShow.value);
+              isErWeiMaDescShow.value = true;
+              isSao.value = false;
+              getQr();
+              QrWords.value = "扫描二维码登录";
+            } else if (code == 802) {
+              QrWords.value = "";
+              isSao.value = true;
+              store.commit("user/setProfle", userInfos.value);
+            } else if (code == 803) {
+              console.log(descWords.value);
+              Cookies.set("userCookie", COOKIES, { expires: 7 });
+              store.commit("utils/setLoginStatus", false);
+              router.go(0);
+              clearInterval(timer);
+            }
+          }, 1000);
+        } else {
+          clearInterval(timer);
+        }
+      }
+    );
+
     return {
       phoneForm,
       LoginRules,
       loginFormRef,
       isLogin,
       login,
+      useErWeiMaLogin,
+      usePasswordLogin,
+      statusCode,
+      key,
+      checkCode,
+      isLogins,
+      descWords,
+      img,
+      words,
+      isErWeiMaDescShow,
+      getQrKey,
+      refresh,
+      isSao,
+      QrWords,
+      userInfos,
+      COOKIES,
     };
   },
 };
 </script>
 <style lang="less" scoped>
 .login {
+  position: relative;
   width: 350px;
   height: 550px;
   box-shadow: #ec4141 0px 0px 4px;
@@ -183,6 +347,81 @@ export default {
     }
   }
   .reg-box {
+  }
+  .test {
+    .ercode {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 64px;
+      height: 64px;
+      border-color: #ff5c00 #ff5c00 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+      opacity: 0.4;
+      border-style: solid;
+      border-width: 32px;
+      background-size: cover;
+      transition: all 0.3s;
+      cursor: pointer;
+      &:hover {
+        opacity: 1;
+      }
+      .icon {
+        position: absolute;
+        top: -25px;
+        right: -23px;
+        width: 36px;
+        height: 36px;
+        overflow: hidden;
+        fill: #fff;
+      }
+    }
+    &:hover .descs {
+      opacity: 1;
+    }
+    .descs {
+      position: absolute;
+      top: 24px;
+      right: 62px;
+      background-color: #ff5c00;
+      color: #fff;
+      padding: 5px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: all 0.5s;
+      &::after {
+        content: "";
+        width: 0;
+        height: 0;
+        border-top: 8px solid transparent;
+        border-left: 8px solid #ff5c00;
+        border-bottom: 8px solid transparent;
+        font-size: 0;
+        line-height: 0;
+        position: absolute;
+        right: -8px;
+        top: 7px;
+      }
+    }
+  }
+  .erweima {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    .past {
+      position: absolute;
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+      width: 180px;
+      height: 180px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      p {
+        margin-bottom: 12px;
+      }
+    }
   }
 }
 .el-input /deep/ .el-input__inner {

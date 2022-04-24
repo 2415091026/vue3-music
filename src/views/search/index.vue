@@ -31,7 +31,7 @@
       <!-- 当输入框输入文字时显示这个 -->
       <div
         class="haveKeyWords"
-        v-else
+        v-if="keyWords"
       >
         <!-- 单曲 -->
         <div
@@ -148,7 +148,13 @@ import { useStore } from "vuex";
 import { computed, onMounted, ref, nextTick, watch } from "vue";
 import { getHotSearch, sendSearch, searchSuggest } from "../../api/search";
 import { useRouter } from "vue-router";
-import { Headset, User, HelpFilled, Operation } from "@element-plus/icons-vue";
+import {
+  Headset,
+  User,
+  HelpFilled,
+  Operation,
+  Loading,
+} from "@element-plus/icons-vue";
 import { getSongInfo, getLyric, getRecently } from "../../api/songs";
 export default {
   components: {
@@ -156,6 +162,7 @@ export default {
     User,
     HelpFilled,
     Operation,
+    Loading,
   },
   setup(props) {
     const store = useStore();
@@ -236,6 +243,11 @@ export default {
 </script>
 <style lang="less" scoped>
 .search {
+  .loading {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+  }
   .moren {
     .title {
       padding: 20px 20px 10px 20px;

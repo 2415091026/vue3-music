@@ -20,8 +20,12 @@ export default {
       // !搜索框关键词
       keyWords: '',
       // !控制搜索框的显示
-      searchShow: false
-
+      searchShow: false,
+      // !个人空间显示自己的还是其他用户的
+      // !true表示显示的是个人空间的信息
+      isMine: 'true',
+      // 用来判断是歌单还是专辑   默认是歌单
+      isAlbumOrSongList: 'songList'
     }
   },
   mutations: {
@@ -57,6 +61,12 @@ export default {
     },
     setSearchShow(state, show) {
       state.searchShow = show
+    },
+    setIsMine(state, newV) {
+      state.isMine = newV
+    },
+    setStatus(state, newStatus) {
+      state.isAlbumOrSongList = newStatus
     }
   }
 }

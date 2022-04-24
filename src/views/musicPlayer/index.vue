@@ -249,7 +249,7 @@ export default {
           // const curretntLyric = surrentLyricInfo.text;
           // console.log(surrentLyricInfo);
           // !当前播放歌曲的当前句歌词
-          if (surrentLyricInfo.text) {
+          if (surrentLyricInfo) {
             curretntLyrics.value = surrentLyricInfo.text;
           }
 

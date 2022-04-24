@@ -49,15 +49,17 @@
           <dicuss-lists :comments="comments"></dicuss-lists>
         </div>
       </div>
+
       <div
         class="load"
         v-else
       >
-        <el-icon>
+        <el-icon class="is-loading">
           <loading />
         </el-icon>
         加载中
       </div>
+
     </div>
 
   </div>
@@ -113,6 +115,7 @@ export default {
         total.value = res.total;
       });
     };
+
     onMounted(() => {
       getDicussList();
     });

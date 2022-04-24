@@ -41,3 +41,23 @@ export const sendMessage = ({t,type,content,id,commentId}) => {
 export const getSongDiscuss = ({id}) => {
   return request('/comment/music', "get",{id})
 }
+// 获取歌手列表
+export const getSonger = ({limit,initial,type,area,offset}) => {
+  return request('/artist/list', "get",{limit,initial,type,area,offset})
+}
+// 获取歌手详情
+export const getSongerInfo = ({id}) => {
+  return request("/artist/detail","get",{id})
+}
+// 获取歌手热门 50 首歌曲
+export const getHotSongs = ({id}) => {
+  return request('/artist/top/song', "get", {id})
+}
+// 获取歌手专辑
+export const getSongerAlbum = ({id,offset}) => {
+  return request('/artist/album',"get",{id,offset})
+}
+// 获取专辑内容
+export const getAlbumMusic = ({id}) => {
+  return request('/album','get',{id})
+}

@@ -6,7 +6,7 @@
       element-loading-text="加载中"
     >
       <el-table
-        :data="musicList"
+        :data="test"
         stripe
         style="width: 100%"
         @cell-dblclick="playSong"
@@ -52,6 +52,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    album: {
+      type: Array,
+      default: () => [],
+    },
   },
   setup(props) {
     const store = useStore();
@@ -68,7 +72,7 @@ export default {
     // !双击播放时将歌曲的URL传到vuex中
     const playSong = (row) => {
       store.commit("music/setSongInfo", row);
-      console.log(row);
+      console.log(row, "roe");
       store.commit("music/setIsPlaying", true);
       store.commit("music/setCurrentSongIndex", row.index);
       store.commit(
@@ -96,15 +100,28 @@ export default {
     };
     onMounted(() => {
       tableRowClassName;
+      // if(props.musicList.length < 0) {
+      //   test.value  = props.album
+      // } else {
+
+      // }
     });
+    const test = ref([]);
     watch(
-      () => props.musicList,
+      () => [props.musicList, props.album],
       (val) => {
         load.value = false;
+        console.log(val[0].length);
+        if (val[0].length > 0) {
+          test.value = val[0];
+        } else {
+          test.value = val[1];
+        }
       }
     );
     return {
       load,
+      test,
       timeFormat,
       playSong,
       tableRowClassName,

@@ -1,11 +1,22 @@
 <template>
   <div class="recommend">
     <div class="container">
+
       <div class="banner">
+        <div
+          class="banner-skeleton"
+          v-if="!bannerList.length"
+        >
+          <el-skeleton
+            :rows="0"
+            animated
+          />
+        </div>
         <el-carousel
           :interval="4000"
           type="card"
           height="200px"
+          v-else
         >
           <el-carousel-item
             v-for="item in bannerList"
@@ -164,5 +175,9 @@ export default {
 }
 .el-carousel /deep/ .is-active {
   border-radius: 20px;
+}
+.el-skeleton /deep/ .el-skeleton__item {
+  width: 100% !important;
+  height: 165px !important;
 }
 </style>

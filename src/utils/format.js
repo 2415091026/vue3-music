@@ -8,12 +8,12 @@ export function formatTime(time) {
 
 }
 export function formatCount(count) {
-  if (count > 100000) {
-    return (count / 10000).toFixed(0) +"万"
-  } else if (count > 100000000) {
-    return (count / 100000000).toFixed(1) + '亿'
-  } else if (count > 100000000) {
-    return (count / 1000000000).toFixed(1) + '亿'
+  if (count > 100000000) {
+    return (count / 100000000).toFixed(0) + "亿";
+  } else if (count > 1000000) {
+    return (count / 10000).toFixed(0) + "万";
+  } else if (count > 100000) {
+    return (count / 1000).toFixed(0) + "万";
   } else {
     return
   }

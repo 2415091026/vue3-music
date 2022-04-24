@@ -52,11 +52,13 @@ import {
   getRecommendSongList,
   getDailySongList,
 } from "../../../api/main";
-
+import { ElMessage } from "element-plus";
+import { useStore } from "vuex";
 export default {
   components: {},
   setup(props) {
     const router = useRouter();
+    const store = useStore();
     const day = ref("");
     const getBackgroundImage = ref("");
 
@@ -72,40 +74,52 @@ export default {
       getRecommendSongList({ limit: "9" }).then((res) => {
         // console.log("推荐歌单", res.result.slice(0, 3));
         // recommendList.value = res.result.slice(0, 2);
-        getDailySongList().then((ress) => {
-          console.log(ress.recommend);
-
-          switch (ress.recommend.length) {
-            case 6: {
-              dailyRecommendList.value = ress.recommend.concat(
-                res.result.slice(0, 3)
-              );
-              break;
-            }
-            case 7: {
-              dailyRecommendList.value = ress.recommend.concat(
-                res.result.slice(0, 2)
-              );
-              break;
-            }
-            case 8: {
+        getDailySongList()
+          .then((ress) => {
+            console.log(ress.recommend);
+            if (ress.recommend.length >= 9) {
+              dailyRecommendList.value = ress.recommend.splice(0, 9);
+            } else {
               dailyRecommendList.value = ress.recommend.concat(
                 res.result.slice(0, 1)
               );
-              break;
             }
-            case 9: {
-              dailyRecommendList.value = ress.recommend;
-              break;
-            }
-            case 19: {
-              dailyRecommendList.value = ress.recommend.splice(0, 9);
-              break;
-            }
-          }
+            // switch (ress.recommend.length) {
+            //   case 6: {
+            //     dailyRecommendList.value = ress.recommend.concat(
+            //       res.result.slice(0, 3)
+            //     );
+            //     break;
+            //   }
+            //   case 7: {
+            //     dailyRecommendList.value = ress.recommend.concat(
+            //       res.result.slice(0, 2)
+            //     );
+            //     break;
+            //   }
+            //   case 8: {
+            //     dailyRecommendList.value = ress.recommend.concat(
+            //       res.result.slice(0, 1)
+            //     );
+            //     break;
+            //   }
+            //   case 9: {
+            //     dailyRecommendList.value = ress.recommend;
+            //     break;
+            //   }
+            //   case 11: {
+            //     dailyRecommendList.value = ress.recommend.splice(0, 9);
+            //     break;
+            //   }
+            // }
 
-          // console.log("dailyRecommendList", dailyRecommendList.value);
-        });
+            // console.log("dailyRecommendList", dailyRecommendList.value);
+          })
+          .catch((e) => {
+            if (e.response) {
+              ElMessage.error(e.response.data.msg);
+            }
+          });
       });
     });
     const dailyClick = () => {
@@ -114,6 +128,7 @@ export default {
     };
     const recommendClick = (id) => {
       console.log(id);
+      store.commit("utils/setStatus", "songList");
       router.push({ path: "/main/find/songList", query: { id: id } });
     };
     return {
@@ -140,7 +155,7 @@ export default {
     .recommend-box {
       width: 205px;
       height: 205px;
-      background-color: pink;
+      // background-color: pink;
       border-radius: 10px;
       margin: 0 0 50px 0;
     }
@@ -148,7 +163,7 @@ export default {
       // position: relative;
       width: 205px;
       height: 205px;
-      background-color: pink;
+      // background-color: pink;
       border-radius: 10px;
       overflow: hidden;
       cursor: pointer;

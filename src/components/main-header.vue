@@ -46,20 +46,25 @@
     <div class="userSetting">
       <div class="userSetting-left">
         <!-- 头像 -->
-        <el-avatar :src="avatarUrl" />
+        <el-avatar
+          :src="avatarUrl"
+          @click="toUserInfo"
+        />
         <!-- 用户名 -->
         <el-dropdown>
           <span
             class="user-name"
-            v-if="token"
+            v-if="token || cookiess"
           >{{nickName}}</span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>Action 1</el-dropdown-item>
-              <el-dropdown-item>Action 2</el-dropdown-item>
-              <el-dropdown-item>Action 3</el-dropdown-item>
-              <el-dropdown-item disabled>Action 4</el-dropdown-item>
-              <el-dropdown-item divided>Action 5</el-dropdown-item>
+              <el-dropdown-item>会员中心</el-dropdown-item>
+              <el-dropdown-item divided>等级</el-dropdown-item>
+              <el-dropdown-item divided>个人信息设置</el-dropdown-item>
+              <el-dropdown-item
+                divided
+                @click="out"
+              >退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -67,7 +72,7 @@
         <span
           class="plaeseLogin"
           @click="toLogin"
-          v-if="!token"
+          v-if="!token && !cookiess"
         >请登录</span>
         <!-- 信息 -->
         <el-button circle>
@@ -87,6 +92,8 @@ import { computed, ref, onMounted, nextTick } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { getDefaultSearch, searchSuggest } from "../api/search";
+import { logout } from "../api/login";
+import Cookies from "js-cookie";
 export default {
   components: {
     ArrowLeft,
@@ -143,14 +150,34 @@ export default {
       // store.commit("utils/setKeyWords", "");
     };
     const placeholder = ref("");
+    const cookiess = ref("");
     onMounted(() => {
       // !获取搜索默认关键词
       getDefaultSearch().then((res) => {
         console.log("默认", res);
         placeholder.value = res.data.showKeyword;
       });
+      cookiess.value = Cookies.get("userCookie");
+      console.log("cookie", Cookies.get("MUSIC_U"));
     });
-
+    // !退出登录
+    const out = () => {
+      logout().then((res) => {
+        console.log(res);
+        localStorage.setItem("token", "");
+        store.commit("user/setProfle", {});
+        Cookies.remove("userCookie");
+        router.go(0);
+      });
+    };
+    // !前往个人中心
+    const toUserInfo = () => {
+      store.commit("utils/setIsMine", true);
+      router.push({
+        path: "/main/userinfo",
+        query: { uid: store.state.user.userId },
+      });
+    };
     return {
       toLogin,
       back,
@@ -159,9 +186,12 @@ export default {
       nickName,
       keyWords,
       placeholder,
+      cookiess,
       keyordsInput,
       inputFocus,
       inputBlur,
+      out,
+      toUserInfo,
     };
   },
 };
@@ -244,5 +274,8 @@ export default {
 }
 .el-icon {
   color: #fbd9d9 !important;
+}
+.el-avatar {
+  cursor: pointer;
 }
 </style>

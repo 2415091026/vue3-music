@@ -1,6 +1,7 @@
 <template>
   <div class="music">
     <div class="top-tabs">
+
       <el-tabs
         class="demo-tabs"
         v-model="activeName"
@@ -22,25 +23,34 @@
         <el-tab-pane
           label="排行榜"
           name="fourth"
-        >排行榜</el-tab-pane>
+        >
+          <ranking-list></ranking-list>
+        </el-tab-pane>
         <el-tab-pane
           label="歌手"
           name="fifth"
-        >歌手</el-tab-pane>
+        >
+          <songer></songer>
+        </el-tab-pane>
         <el-tab-pane
           label="最新音乐"
           name="sixth"
         >最新音乐</el-tab-pane>
       </el-tabs>
+
     </div>
   </div>
 </template>
 <script>
 import { ref } from "vue";
 import Recommend from "../../views/recommend";
+import RankingList from "../../views/rankingList/index";
+import Songer from "../../views/songer/index";
 export default {
   components: {
     Recommend,
+    RankingList,
+    Songer,
   },
   setup(props) {
     const activeName = ref("first");
@@ -51,6 +61,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.top-tabs {
+  padding: 12px;
+  .fixed-tabs {
+  }
+}
 .el-tabs /deep/ .el-tabs__nav-wrap::after {
   content: none !important;
 }

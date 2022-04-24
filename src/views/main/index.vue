@@ -126,7 +126,7 @@ export default {
   .login-box {
     position: absolute;
     top: 30%;
-    left: 45%;
+    left: 47%;
     background-color: #fff;
     z-index: 999;
     border-radius: 10px;
@@ -178,7 +178,7 @@ export default {
   }
 }
 .search-box {
-  position: absolute;
+  position: fixed;
   top: 68px;
   left: 239px;
   width: 350px;

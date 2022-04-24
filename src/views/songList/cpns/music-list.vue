@@ -10,7 +10,10 @@
           label="歌曲列表"
           name="first"
         >
-          <music-table :musicList='musicList'></music-table>
+          <music-table
+            :musicList='musicList'
+            :album="album"
+          ></music-table>
         </el-tab-pane>
         <el-tab-pane
           label='评论'
@@ -24,7 +27,7 @@
           ></music-dicuss>
         </el-tab-pane>
         <el-tab-pane
-          label="收藏者"
+          :label="test"
           name="third"
         >Role</el-tab-pane>
 
@@ -47,7 +50,7 @@
   </div>
 </template>
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import MusicTable from "./music-table.vue";
 import { Calendar, Search } from "@element-plus/icons-vue";
 import { searchMusic } from "../../../api/songs";
@@ -68,6 +71,10 @@ export default {
     id: {
       type: String,
       default: () => "",
+    },
+    album: {
+      type: Array,
+      default: () => [],
     },
   },
   setup(props) {
@@ -101,6 +108,15 @@ export default {
     const songListId = computed(() => {
       return props.id;
     });
+    const test = ref("收藏者");
+    onMounted(() => {
+      console.log(props.musicList, "props.musicList");
+      console.log(props.album, "props.album");
+    });
+    watch(() => [props.musicList, props.album]),
+      (val) => {
+        console.log(val, "val");
+      };
     return {
       activeName,
       hotComments,
@@ -110,6 +126,7 @@ export default {
       handleClick,
       search,
       songListId,
+      test,
     };
   },
 };

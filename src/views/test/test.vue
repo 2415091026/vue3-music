@@ -12,9 +12,10 @@
 </template>
 <script>
 import { ref, onMounted, nextTick } from "vue";
-import { get } from "../../api/test";
+import { get, userBind } from "../../api/test";
 import { useStore } from "vuex";
 import { paesrLyric } from "../../utils/parse-lyric";
+import Cookies from "js-cookie";
 export default {
   components: {},
   setup(props) {
@@ -33,6 +34,7 @@ export default {
     let isDown = ref(false);
     const box = ref();
     onMounted(() => {
+      console.log(Cookies.get("userCookie"));
       get().then((res) => {
         console.log("test", res);
       });
@@ -72,6 +74,9 @@ export default {
         isDown.value = false;
         box.value.style.cursor = "default";
       };
+      userBind({ uid: "275104067" }).then((res) => {
+        console.log(res, "信息");
+      });
     });
     return {
       player,

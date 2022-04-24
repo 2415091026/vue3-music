@@ -10,7 +10,7 @@
         >
       </div>
       <div v-if="!coverImgUrl">
-        <el-skeleton style="width: 2185px">
+        <el-skeleton>
           <template #template>
             <el-skeleton-item
               variant="image"
@@ -26,7 +26,10 @@
           <span class="tag">歌单</span>
           <span class="name">{{name}}</span>
         </div>
-        <div class="right-center">
+        <div
+          class="right-center"
+          v-if="musicList.length"
+        >
           <img
             :src="avatarUrl"
             alt=""
@@ -34,7 +37,10 @@
           <span class="name">{{userName}}</span>
           <span class="createTime">{{time}}创建</span>
         </div>
-        <div class="right-footer">
+        <div
+          class="right-footer"
+          v-if="musicList.length"
+        >
           <p>标签:<span
               v-for="item in tags"
               :key="item"
@@ -42,18 +48,32 @@
           <p><span>歌曲:{{songCount}}</span> <span>播放:{{playCount}}</span></p>
           <p class="brief">简介:{{description}}</p>
         </div>
+        <div
+          class="songer-time"
+          v-else
+        >
+          <p class="songer">歌手:
+            <span v-for="item in songer">{{item.name}} </span>
+          </p>
+          <p class="time">时间:{{time}}</p>
+        </div>
       </div>
     </div>
     <div class="list">
       <music-list
         :musicList="musicList"
+        :album='album'
         :id="id"
       ></music-list>
     </div>
   </div>
 </template>
 <script>
-import { getSongListParticulars, getAllSongs } from "../../api/main";
+import {
+  getSongListParticulars,
+  getAllSongs,
+  getAlbumMusic,
+} from "../../api/main";
 import { onMounted, ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
@@ -68,6 +88,7 @@ export default {
     const route = useRoute();
     // !歌单id
     const id = route.query.id;
+    const albumId = route.query.id;
     // !标题
     const name = ref("");
     // !歌单创建者
@@ -90,38 +111,55 @@ export default {
     const trackIds = ref([]);
     // !歌曲列表
     const musicList = ref([]);
+
+    const album = ref([]);
+    const songer = ref([]);
     onMounted(() => {
-      getSongListParticulars({ id: id }).then((res) => {
-        console.log("歌单详情", res);
-        name.value = res.playlist.name;
-        userName.value = res.playlist.creator.nickname;
-        avatarUrl.value = res.playlist.creator.avatarUrl;
-        coverImgUrl.value = res.playlist.coverImgUrl;
-        time.value = formatTime(res.playlist.createTime);
-        description.value = res.playlist.description;
-        songCount.value = res.playlist.trackIds.length;
-        tags.value = res.playlist.tags;
-        playCount.value = formatCount(res.playlist.playCount);
-        trackIds.value = res.playlist.trackIds;
-        console.log(trackIds.value);
-        // trackIds.value.map((item) => {
-        //   getMusicInfo({ ids: item.id }).then((res) => {
-        //     console.log(res);
-        //   });
-        // });
-      });
+      if (store.state.utils.isAlbumOrSongList === "songList") {
+        getSongListParticulars({ id: id }).then((res) => {
+          console.log("歌单详情", res);
+          name.value = res.playlist.name;
+          userName.value = res.playlist.creator.nickname;
+          avatarUrl.value = res.playlist.creator.avatarUrl;
+          coverImgUrl.value = res.playlist.coverImgUrl;
+          time.value = formatTime(res.playlist.createTime);
+          description.value = res.playlist.description;
+          songCount.value = res.playlist.trackIds.length;
+          tags.value = res.playlist.tags;
+          playCount.value = formatCount(res.playlist.playCount);
+          trackIds.value = res.playlist.trackIds;
+          console.log(trackIds.value);
+          // trackIds.value.map((item) => {
+          //   getMusicInfo({ ids: item.id }).then((res) => {
+          //     console.log(res);
+          //   });
+          // });
+        });
+      } else {
+        getAlbumMusic({ id: albumId }).then((res) => {
+          console.log("专辑", res);
+          album.value = res.songs;
+          songer.value = res.album.artists;
+          coverImgUrl.value = res.songs[0].al.picUrl;
+          name.value = res.songs[0].al.name;
+          time.value = formatTime(res.album.publishTime);
+          store.commit("music/setAllSongsList", res.songs);
+        });
+      }
       getAll();
     });
     const getAll = () => {
       // !获取歌单里全部歌曲
-      getAllSongs({ id: id }).then((res) => {
-        console.log("全部", res);
-        musicList.value = res.songs;
-        // if (store.state.music.isPlaying == true) {
-        //   store.commit("music/setCurrentPlayingSongs", res.songs);
-        // }
-        store.commit("music/setAllSongsList", res.songs);
-      });
+      if (store.state.utils.isAlbumOrSongList === "songList") {
+        getAllSongs({ id: id }).then((res) => {
+          console.log("全部", res);
+          musicList.value = res.songs;
+          // if (store.state.music.isPlaying == true) {
+          //   store.commit("music/setCurrentPlayingSongs", res.songs);
+          // }
+          store.commit("music/setAllSongsList", res.songs);
+        });
+      }
     };
     // watch(
     //   () => store.state.music.isPlaying,
@@ -134,6 +172,7 @@ export default {
     // );
     return {
       id,
+      songer,
       name,
       userName,
       avatarUrl,
@@ -145,6 +184,7 @@ export default {
       playCount,
       trackIds,
       musicList,
+      album,
       getAll,
     };
   },
@@ -219,6 +259,14 @@ export default {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+        }
+      }
+    }
+    .songer-time {
+      span {
+        margin-left: 5px;
+        &:nth-child(1) {
+          margin-left: 0;
         }
       }
     }

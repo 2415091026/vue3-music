@@ -7,13 +7,14 @@ import axios from 'axios'
 import store from '../store'
 import router from '../router'
 // 导出基准地址，原因：其他地方不是通过axios发请求的地方用上基准地址
-export const baseURL = 'https://my-music-api-delta.vercel.app/'
+// export const baseURL = 'https://my-music-api-delta.vercel.app/'
+export const baseURL = 'http://localhost:3000'
 const instance = axios.create({
   // axios 的一些配置，baseURL  timeout
   baseURL,
   timeout: 5000
 })
-axios.defaults.withCredentials = true
+// axios.defaults.withCredentials = true
 instance.interceptors.request.use(config => {
   // 拦截业务逻辑
   // 进行请求配置的修改

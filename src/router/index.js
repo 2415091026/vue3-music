@@ -29,7 +29,19 @@ const routes = [
       {
         path: '/main/search',
         component: () => import("../views/search/cpns/search-list")
-      }
+      },
+      {
+        path: '/main/userinfo',
+        component: () => import('../views/userInfo/index')
+      },
+      {
+        path: '/main/userinfo/madification',
+        component: () => import ("../views/userInfo/cpns/modification")
+      },
+      {
+        path: '/main/songerInfo',
+        component: () => import('../views/songer/songerInfo')
+       }
     ]
   }
 
