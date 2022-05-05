@@ -115,8 +115,8 @@ export default {
       return store.state.utils.isLogin;
     });
     const phoneForm = reactive({
-      phone: "15528132178",
-      password: "199697427abc",
+      phone: "",
+      password: "",
     });
     const LoginRules = reactive({
       phone: [
