@@ -25,7 +25,10 @@ export default {
       // !true表示显示的是个人空间的信息
       isMine: 'true',
       // 用来判断是歌单还是专辑   默认是歌单
-      isAlbumOrSongList: 'songList'
+      isAlbumOrSongList: 'songList',
+      // 消息框的显示
+      messageShow: false,
+      currentMsg: {}
     }
   },
   mutations: {
@@ -67,6 +70,12 @@ export default {
     },
     setStatus(state, newStatus) {
       state.isAlbumOrSongList = newStatus
+    },
+    setMessageShow(state, show) {
+      state.messageShow = show
+    },
+    setCurrentMsg(state, currentMsg) {
+      state.currentMsg = currentMsg
     }
   }
 }

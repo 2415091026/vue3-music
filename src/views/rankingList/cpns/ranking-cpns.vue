@@ -113,18 +113,18 @@ export default {
     const router = useRouter();
     const store = useStore();
     const catAll = (id) => {
-      console.log("点击了", id);
+      // console.log("点击了", id);
       router.push({ path: "/main/find/songList", query: { id: id } });
     };
     const play = (item) => {
       console.log(item);
       store.commit("music/setSongInfo", item);
       getSongInfo({ id: item.id }).then((res) => {
-        console.log(res);
+        // console.log(res);
         store.commit("music/setPlayUrl", res.data[0].url);
       });
       getLyric({ id: item.id }).then((res) => {
-        console.log(res, "歌词");
+        // console.log(res, "歌词");
         store.commit("music/setLyric", res.lrc.lyric);
       });
     };

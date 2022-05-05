@@ -61,3 +61,7 @@ export const getSongerAlbum = ({id,offset}) => {
 export const getAlbumMusic = ({id}) => {
   return request('/album','get',{id})
 }
+// 获取独家放送入口列表
+export const getPersonalized = () => {
+  return request('/personalized/privatecontent','get')
+}

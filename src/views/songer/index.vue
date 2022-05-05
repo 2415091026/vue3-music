@@ -240,11 +240,11 @@ export default {
       clientWidth.value = screenWidth;
       // let screenHight = document.documentElement.scrollTop;
       // clientHeight.value = 245;
-      console.log(
-        document.documentElement.clientHeight,
-        document.documentElement.scrollTop,
-        document.documentElement.scrollHeight
-      );
+      // console.log(
+      //   document.documentElement.clientHeight,
+      //   document.documentElement.scrollTop,
+      //   document.documentElement.scrollHeight
+      // );
       window.addEventListener("scroll", load);
       // 获取文档内容实际高度
       // 获取歌手列表
@@ -267,7 +267,7 @@ export default {
         area: area.value,
         offset: (pageNo.value - 1) * limit.value,
       }).then((res) => {
-        console.log(res, "歌手");
+        // console.log(res, "歌手");
         songerList.value = res.artists;
       });
     };
@@ -278,7 +278,7 @@ export default {
       let clientHeight = document.documentElement.clientHeight;
       let scrollHeight = document.documentElement.scrollHeight;
       if (scrollTop + clientHeight >= scrollHeight) {
-        console.log("到底le");
+        // console.log("到底le");
         pageNo.value += 1;
         songerRef.value.scrollIntoView(true);
       }

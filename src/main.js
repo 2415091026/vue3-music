@@ -7,7 +7,7 @@ import ElementPlus from 'element-plus';
 import 'element-plus/theme-chalk/index.css'
 import "./assets/iconfont/iconfont.js"
 import axios from "axios"
-import animated from 'animate.css'
+import animate from 'animate.css'
 import lazyPlugin from 'vue3-lazy'
-createApp(App).use(store).use(router).use(ElementPlus).use(animated).use(lazyPlugin, {loading: require('@/assets/image/loading-bars.svg')}).mount('#app')
+createApp(App).use(store).use(router).use(ElementPlus).use(animate).use(lazyPlugin, {loading: require('@/assets/image/loading-bars.svg')}).mount('#app')
 axios.defaults.withCredentials = true;

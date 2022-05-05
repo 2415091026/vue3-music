@@ -52,27 +52,18 @@
           </el-icon>
         </main-header-nav>
         <div class="exclusive-list">
-          <div class="exclusive-img">
+          <div
+            class="exclusive-img"
+            v-for="item in personalized"
+            :key="item.id"
+          >
             <img
-              src="https://p2.music.126.net/ZfQoqzo0rTqe3sFKkDnGuw==/109951167211930348.jpg"
+              :src="item.sPicUrl"
               alt=""
             >
-            <p>《超级面对面》第254期 keshi：我的音乐永远新鲜</p>
+            <p>{{item.copywriter}}</p>
           </div>
-          <div class="exclusive-img">
-            <img
-              src="https://p2.music.126.net/ZfQoqzo0rTqe3sFKkDnGuw==/109951167211930348.jpg"
-              alt=""
-            >
-            <p>《超级面对面》第254期 keshi：我的音乐永远新鲜</p>
-          </div>
-          <div class="exclusive-img">
-            <img
-              src="https://p2.music.126.net/ZfQoqzo0rTqe3sFKkDnGuw==/109951167211930348.jpg"
-              alt=""
-            >
-            <p>《超级面对面》第254期 keshi：我的音乐永远新鲜</p>
-          </div>
+
         </div>
       </div>
 
@@ -82,7 +73,7 @@
 </template>
 <script>
 import { ref, onMounted } from "vue";
-import { getBanner } from "../../api/main";
+import { getBanner, getPersonalized } from "../../api/main";
 import MainHeaderNav from "../../components/main-header-nav";
 import RecommendSongList from "./cpns/recommend-song-list";
 import { ArrowRightBold } from "@element-plus/icons-vue";
@@ -94,14 +85,20 @@ export default {
   },
   setup(props) {
     const bannerList = ref([]);
+    const personalized = ref([]);
     onMounted(() => {
       getBanner({ type: "0" }).then((res) => {
-        console.log(res);
+        // console.log(res);
         bannerList.value = res.banners;
+      });
+      getPersonalized().then((res) => {
+        // console.log("独家", res);
+        personalized.value = res.result;
       });
     });
     return {
       bannerList,
+      personalized,
     };
   },
 };

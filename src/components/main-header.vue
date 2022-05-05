@@ -75,11 +75,16 @@
           v-if="!token && !cookiess"
         >请登录</span>
         <!-- 信息 -->
-        <el-button circle>
-          <el-icon>
-            <files />
-          </el-icon>
-        </el-button>
+        <div
+          class="message"
+          @click="catMessage"
+        > <svg
+            class="icon"
+            aria-hidden="true"
+          >
+            <use xlink:href="#icon-xinxiang"></use>
+          </svg></div>
+
       </div>
       <div class="userSetting-right">111</div>
     </div>
@@ -105,7 +110,7 @@ export default {
     const router = useRouter();
     const store = useStore();
     const toLogin = () => {
-      console.log("登录");
+      // console.log("登录");
       store.commit("utils/setLoginStatus", true);
     };
     const avatarUrl = computed(() => {
@@ -122,12 +127,12 @@ export default {
     };
     const keyWords = ref();
     const keyordsInput = () => {
-      console.log(keyWords.value);
+      // console.log(keyWords.value);
       store.commit("utils/setKeyWords", keyWords.value);
 
       const timer = setTimeout(() => {
         searchSuggest({ keywords: keyWords.value }).then((res) => {
-          console.log("搜索建议", res);
+          // console.log("搜索建议", res);
           if (res.result) {
             store.commit("search/setSearchSuggest", res.result);
           }
@@ -154,16 +159,16 @@ export default {
     onMounted(() => {
       // !获取搜索默认关键词
       getDefaultSearch().then((res) => {
-        console.log("默认", res);
+        // console.log("默认", res);
         placeholder.value = res.data.showKeyword;
       });
       cookiess.value = Cookies.get("userCookie");
-      console.log("cookie", Cookies.get("MUSIC_U"));
+      // console.log("cookie", Cookies.get("MUSIC_U"));
     });
     // !退出登录
     const out = () => {
       logout().then((res) => {
-        console.log(res);
+        // console.log(res);
         localStorage.setItem("token", "");
         store.commit("user/setProfle", {});
         Cookies.remove("userCookie");
@@ -177,6 +182,11 @@ export default {
         path: "/main/userinfo",
         query: { uid: store.state.user.userId },
       });
+    };
+    // 打开私信框
+    const catMessage = () => {
+      // console.log("来看看你的信息");
+      store.commit("utils/setMessageShow", true);
     };
     return {
       toLogin,
@@ -192,6 +202,7 @@ export default {
       inputBlur,
       out,
       toUserInfo,
+      catMessage,
     };
   },
 };
@@ -240,6 +251,19 @@ export default {
       .plaeseLogin {
         color: #fbd9d9;
         cursor: pointer;
+      }
+      .message {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .icon {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          fill: #fff;
+        }
       }
     }
     .userSetting-right {

@@ -1,12 +1,16 @@
 <template>
   <div>
     <el-button @click="play">播放</el-button>
-    <div
-      id="box"
-      ref="box"
+    <transition
+      enter-active-class="animated animate__backInDown"
+      leave-active-class="animate__backInLeft"
     >
-
-    </div>
+      <div
+        id="box"
+        ref="box"
+      >
+      </div>
+    </transition>
 
   </div>
 </template>
@@ -15,6 +19,7 @@ import { ref, onMounted, nextTick } from "vue";
 import { get, userBind } from "../../api/test";
 import { useStore } from "vuex";
 import { paesrLyric } from "../../utils/parse-lyric";
+import { getMessage } from "../../api/message";
 import Cookies from "js-cookie";
 export default {
   components: {},
@@ -35,7 +40,7 @@ export default {
     const box = ref();
     onMounted(() => {
       console.log(Cookies.get("userCookie"));
-      get().then((res) => {
+      get({ uid: "1452176465" }).then((res) => {
         console.log("test", res);
       });
       player.value = paesrLyric(store.state.music.lyric);
@@ -74,7 +79,7 @@ export default {
         isDown.value = false;
         box.value.style.cursor = "default";
       };
-      userBind({ uid: "275104067" }).then((res) => {
+      userBind().then((res) => {
         console.log(res, "信息");
       });
     });

@@ -60,15 +60,24 @@
   >
     <search></search>
   </div>
+  <!-- 私信框 -->
+  <div
+    class="message-box"
+    v-if="messageShow"
+    ref="messageRef"
+  >
+    <message />
+  </div>
 </template>
 <script>
 import MainHeader from "../../components/main-header";
 import MainAside from "../../components/main-aside";
+import Message from "../../views/message/message";
 import Login from "../login/index";
 import MusicPlayer from "../musicPlayer/index";
 import BigPlayer from "../bigPlayer/index";
 import { useStore } from "vuex";
-import { computed } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { CloseBold } from "@element-plus/icons-vue";
 import Search from "../search/index";
 export default {
@@ -79,11 +88,12 @@ export default {
     MusicPlayer,
     BigPlayer,
     Search,
+    Message,
     CloseBold,
   },
   setup(props) {
     const store = useStore();
-
+    // const messageShow = ref(true);
     const show = computed(() => {
       return store.state.utils.isShow;
     });
@@ -100,12 +110,33 @@ export default {
     const searchShow = computed(() => {
       return store.state.utils.searchShow;
     });
+
+    onMounted(() => {
+      document.addEventListener("mouseup", closeMessageBox);
+    });
+    const messageRef = ref(null);
+    const closeMessageBox = (e) => {
+      if (messageRef.value && !messageRef.value.contains(e.target)) {
+        if (store.state.utils.messageShow === true) {
+          // messageShow.value = false;
+          store.commit("utils/setMessageShow", false);
+          console.log("11");
+        }
+      }
+    };
+    const messageShow = computed(() => {
+      return store.state.utils.messageShow;
+    });
+
     return {
       show,
       curretntLyrics,
       isShow,
       searchShow,
+      messageShow,
+      messageRef,
       close,
+      closeMessageBox,
     };
   },
 };
@@ -187,6 +218,15 @@ export default {
   z-index: 9;
   border-radius: 10px;
   box-shadow: #8d8d8d 0px 0px 4px;
+}
+.message-box {
+  position: fixed;
+  top: 65px;
+  right: 0;
+  height: 100%;
+  width: 400px;
+  box-shadow: 1px 5px 10px #ff0000;
+  z-index: 9;
 }
 .el-header {
   --el-header-padding: 0 !important;

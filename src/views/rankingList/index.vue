@@ -100,7 +100,7 @@ export default {
       clientWidth.value = screenWidth;
       // console.log(document.documentElement.clientWidth);
       getTopList().then((res) => {
-        console.log("榜单", res);
+        // console.log("榜单", res);
 
         soaring.value = res.list[0];
         soaringId.value = res.list[0].id;
@@ -111,7 +111,7 @@ export default {
         hotList.value = res.list[3];
         hotListId.value = res.list[3].id;
 
-        console.log(soaringId.value);
+        // console.log(soaringId.value);
         nextTick(() => {
           getAll(res.list[0].id, res.list[0].name);
           getAll(newListId.value, res.list[1].name);
@@ -126,7 +126,7 @@ export default {
         case "飙升榜": {
           getAllSongs({ id: id }).then((res) => {
             soaringList.value = res.songs;
-            console.log(res, "白哦");
+            // console.log(res, "白哦");
           });
           break;
         }
@@ -153,7 +153,7 @@ export default {
     const toSongList = (item) => {
       router.push({ path: "/main/find/songList", query: { id: item.id } });
       store.commit("utils/setStatus", "songList");
-      console.log(item);
+      // console.log(item);
     };
     const format = (count) => {
       if (count > 100000000) {

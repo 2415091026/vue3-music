@@ -76,7 +76,7 @@ export default {
         // recommendList.value = res.result.slice(0, 2);
         getDailySongList()
           .then((ress) => {
-            console.log(ress.recommend);
+            // console.log(ress.recommend);
             if (ress.recommend.length >= 9) {
               dailyRecommendList.value = ress.recommend.splice(0, 9);
             } else {
@@ -123,11 +123,11 @@ export default {
       });
     });
     const dailyClick = () => {
-      console.log("ers");
+      // console.log("ers");
       router.push("/main/find/dailySongs");
     };
     const recommendClick = (id) => {
-      console.log(id);
+      // console.log(id);
       store.commit("utils/setStatus", "songList");
       router.push({ path: "/main/find/songList", query: { id: id } });
     };

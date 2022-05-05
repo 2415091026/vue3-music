@@ -20,6 +20,7 @@
               @click="toUserSpaec(item)"
             >@{{items.user.nickname}}</span>:{{items.content}}</div>
           <div class="date">{{item.timeStr}}</div>
+
         </div>
         <div class="cto">
           <el-icon @click="reply(item)">
@@ -144,19 +145,8 @@ export default {
         content: from.text,
         commentId: commentIds.value,
       }).then((res) => {
-        console.log(res);
-      });
-      // !延迟获取歌曲评论
-
-      // getSongDiscuss({ id: store.state.music.songInfo.songId }).then(
-      //   (res) => {
-      //     console.log("歌曲评论", res);
-      //     props.comments = res.comments;
-      //   }
-      // );
-      newComment({ id: store.state.music.songInfo.songId }).then((res) => {
-        console.log("歌曲评论", res);
-        props.comments = res.comments;
+        console.log(res, "发表的评论");
+        props.comments.unshift(res.comment);
       });
 
       dialogFormVisible.value = false;
