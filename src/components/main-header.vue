@@ -34,6 +34,7 @@
         @input="keyordsInput"
         @focus="inputFocus"
         @blur="inputBlur"
+        @change="toSearch"
       >
         <template #prefix>
           <el-icon class="el-input__icon">
@@ -132,7 +133,7 @@ export default {
 
       const timer = setTimeout(() => {
         searchSuggest({ keywords: keyWords.value }).then((res) => {
-          // console.log("搜索建议", res);
+          console.log("搜索建议", res);
           if (res.result) {
             store.commit("search/setSearchSuggest", res.result);
           }
@@ -165,6 +166,15 @@ export default {
       cookiess.value = Cookies.get("userCookie");
       // console.log("cookie", Cookies.get("MUSIC_U"));
     });
+    // 当搜索框失去焦点或点击了回车键
+    const toSearch = () => {
+      console.log("回车");
+      router.push({
+        path: "/main/search",
+        query: { keywords: store.state.utils.keyWords },
+      });
+      store.commit("utils/setSearchShow", false);
+    };
     // !退出登录
     const out = () => {
       logout().then((res) => {
@@ -188,6 +198,7 @@ export default {
       // console.log("来看看你的信息");
       store.commit("utils/setMessageShow", true);
     };
+
     return {
       toLogin,
       back,
@@ -203,6 +214,7 @@ export default {
       out,
       toUserInfo,
       catMessage,
+      toSearch,
     };
   },
 };

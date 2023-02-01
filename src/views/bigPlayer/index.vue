@@ -24,8 +24,9 @@
           <div class="author">{{author}}</div>
 
           <div class="song-lyric">
-            <ul :style="{transform: test}">
+            <ul>
               <li
+                :style="{transform: test}"
                 v-for="(item,index) in lyric"
                 :class="{'active': index == currentIndexs,gundong: index == currentIndexs}"
                 :key="index"

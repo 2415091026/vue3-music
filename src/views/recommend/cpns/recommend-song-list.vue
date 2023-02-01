@@ -1,20 +1,12 @@
 <template>
   <div class="dailySongs">
-
-    <div
-      class="recommend-song-list"
-      v-if="dailyRecommendList.length"
-    >
-      <div
-        class="dailySongs-box"
-        @click="dailyClick"
-      >
+    <div class="recommend-song-list" v-if="dailyRecommendList.length">
+      <div class="dailySongs-box" @click="dailyClick">
         <div class="bg-cover"></div>
-        <img
-          :src="getBackgroundImage"
-          alt=""
-        >
-        <div class="time"><span>{{day}}</span></div>
+        <img :src="getBackgroundImage" alt="" />
+        <div class="time">
+          <span>{{ day }}</span>
+        </div>
         <div class="words">每日歌曲推荐</div>
       </div>
       <div
@@ -23,25 +15,13 @@
         :key="item.id"
         @click="recommendClick(item.id)"
       >
-        <img
-          :src="item.picUrl"
-          alt=""
-        >
-        <p>{{item.name}}</p>
+        <img :src="item.picUrl" alt="" />
+        <p>{{ item.name }}</p>
       </div>
-
     </div>
-    <div
-      class="daily-skeleton"
-      v-else
-    >
-      <el-skeleton
-        :rows="0"
-        animated
-        v-for="item in 10"
-      />
+    <div class="daily-skeleton" v-else>
+      <el-skeleton :rows="0" animated v-for="item in 10" />
     </div>
-
   </div>
 </template>
 <script>
@@ -69,7 +49,7 @@ export default {
       day.value = date.getDate();
       getRecommendDaily().then((res) => {
         getBackgroundImage.value = res.data.dailySongs[0].al.picUrl;
-        // console.log("每日歌曲", res);
+        console.log("每日歌曲", res);
       });
       getRecommendSongList({ limit: "9" }).then((res) => {
         // console.log("推荐歌单", res.result.slice(0, 3));
@@ -150,7 +130,7 @@ export default {
   .recommend-song-list {
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-wrap: wrap;
     .recommend-box {
       width: 205px;

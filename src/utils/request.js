@@ -7,8 +7,9 @@ import axios from 'axios'
 import store from '../store'
 import router from '../router'
 // 导出基准地址，原因：其他地方不是通过axios发请求的地方用上基准地址
-// export const baseURL = 'https://my-music-api-delta.vercel.app/'
+// export const baseURL = 'https://netease-cloud-music-m0ue3umfl-2415091026.vercel.app'
 export const baseURL = 'http://localhost:3000'
+
 const instance = axios.create({
   // axios 的一些配置，baseURL  timeout
   baseURL,

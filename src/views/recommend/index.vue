@@ -149,7 +149,7 @@ export default {
     width: 100%;
     .exclusive-list {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       .exclusive-img {
         display: flex;
         flex-flow: column;

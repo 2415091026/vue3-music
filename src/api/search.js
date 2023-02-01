@@ -15,3 +15,7 @@ export const sendSearch = ({keywords }) => {
 export const searchSuggest = ({keywords }) => {
   return request('/search/suggest',"get",{keywords })
 }
+// 搜索多重匹配
+export const getMultimatch = ({keywords}) => {
+  return request('/search/multimatch','get',{keywords })
+}

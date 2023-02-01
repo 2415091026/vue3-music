@@ -75,6 +75,7 @@ import { reactive, ref, onMounted, nextTick, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { getMessage } from "../../api/message";
 import Detail from "./detail.vue";
+import { ElMessage } from "element-plus";
 export default {
   components: {
     Detail,
@@ -103,17 +104,23 @@ export default {
     const lastMsg = ref([]);
     const currentMsg = ref({});
     onMounted(() => {
-      getMessage().then((res) => {
-        privateLetter.value = res.msgs;
-        console.log("私信", res.msgs);
-        for (let i = 0; i < res.msgs.length; i++) {
-          let lastMsgList = JSON.parse(res.msgs[i].lastMsg);
-          lastMsg.value.push(lastMsgList);
-          for (let m = 0; m < lastMsg.value.length; m++) {
-            Object.assign(privateLetter.value[m], lastMsg.value[m]);
+      getMessage()
+        .then((res) => {
+          privateLetter.value = res.msgs;
+          console.log("私信", res.msgs);
+          for (let i = 0; i < res.msgs.length; i++) {
+            let lastMsgList = JSON.parse(res.msgs[i].lastMsg);
+            lastMsg.value.push(lastMsgList);
+            for (let m = 0; m < lastMsg.value.length; m++) {
+              Object.assign(privateLetter.value[m], lastMsg.value[m]);
+            }
           }
-        }
-      });
+        })
+        .catch((e) => {
+          if (e.response) {
+            ElMessage.error(e.response.data.msg);
+          }
+        });
     });
     const fromUserId = ref("");
     const uid = ref("");

@@ -11,7 +11,7 @@
       >
       </div>
     </transition>
-
+    <search-like-box></search-like-box>
   </div>
 </template>
 <script>
@@ -21,8 +21,9 @@ import { useStore } from "vuex";
 import { paesrLyric } from "../../utils/parse-lyric";
 import { getMessage } from "../../api/message";
 import Cookies from "js-cookie";
+import searchLikeBox from "../../components/search-like-box.vue";
 export default {
-  components: {},
+  components: { searchLikeBox },
   setup(props) {
     const player = ref();
     const store = useStore();

@@ -84,10 +84,10 @@ export default {
     const get = () => {
       getContent({ uid: store.state.utils.currentMsg.user.fromUserId }).then(
         (res) => {
-          console.log("私信内容", props.uid);
+          console.log("私信内容", res);
           for (let i = 0; i < res.msgs.length; i++) {
             promotion.value[i] = JSON.parse(res.msgs[i].msg);
-            promotion.value.reverse();
+            // promotion.value.reverse();
           }
         }
       );
